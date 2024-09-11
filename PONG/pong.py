@@ -41,27 +41,12 @@ paleta_j1 = pg.Rect(j1_x, j1_y, ANCHO_PALETA, ALTO_PALETA)
 paleta_j2 = pg.Rect(j2_x, j2_y, ANCHO_PALETA, ALTO_PALETA)
 pelota = pg.Rect(pelota_x, pelota_y, ANCHO_PELOTA, ALTO_PELOTA)
 
+
 #teclas a utilizar
 MOVE_UP_J1 = pg.K_w
 MOVE_DOWN_J1 = pg.K_s
 MOVE_UP_J2 = pg.K_DOWN
 MOVE_DOWN_J2 = pg.K_UP
-
-
-#movimiento de los rectangulos
-teclas = pg.key.get_pressed()
-
-#mover los rectangulos segun la tecla presionada
-if teclas[MOVE_UP_J1]:
-    j1_y += velocity
-if teclas[MOVE_DOWN_J1]:
-    j1_y -= velocity
-if teclas[MOVE_UP_J2]:
-    j2_y += velocity
-if teclas[MOVE_DOWN_J2]:
-    j2_y -= velocity    
-
-
 
 def dibujar_pantalla():
     PANTALLA.fill(COLOR_FONDO)
@@ -69,23 +54,37 @@ def dibujar_pantalla():
     pg.draw.rect(PANTALLA, AZUL, paleta_j1)
     pg.draw.rect(PANTALLA, BLANCO, pelota)
 
+# Bucle principal del juego
 while ejecutando:
     for evento in pg.event.get():
         if evento.type == pg.QUIT:
             ejecutando = False
+    
+#movimiento de los rectangulos
+    teclas = pg.key.get_pressed()
+
+
+#mover los rectangulos segun la tecla presionada
+    if teclas[MOVE_UP_J1]:
+        j1_y -= velocity
+    if teclas[MOVE_DOWN_J1]:
+        j1_y += velocity
+    if teclas[MOVE_UP_J2]:
+        j2_y += velocity
+    if teclas[MOVE_DOWN_J2]:
+        j2_y -= velocity
+
+#actualizar posiciones de paletas
+
+    paleta_j1.y = j1_y
+    paleta_j2.y = j2_y
+
     dibujar_pantalla()
-    
+
+
     pg.display.flip()
+
     mi_reloj.tick(60)
-    
-                
-        
-PANTALLA.fill((0,0,0)) 
-
-pg.display.flip()
-
-rectangulo_1 = pg.draw.rect(PANTALLA, (255, 255, 0), pg.Rect(400, 300, 100, 50), 5, border_radius=10)
-
 
 
 pg.quit
