@@ -1,4 +1,3 @@
-Aquí tienes un ejemplo de un archivo `README.md` para tu proyecto de Ping Pong en Python:
 
 ---
 
@@ -32,7 +31,7 @@ pip install pygame
 Puedes clonar este repositorio con el siguiente comando:
 
 ```bash
-git clone https://github.com/usuario/ping-pong-python.git
+git clone [https://github.com/usuario/ping-pong-python](https://github.com/francop-dev/proyectos-py.git)
 ```
 
 ### 2. Ejecutar el juego
