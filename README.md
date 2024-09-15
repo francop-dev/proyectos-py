@@ -32,7 +32,7 @@ pip install pygame
 Puedes clonar este repositorio con el siguiente comando:
 
 ```bash
-git clone https://github.com/usuario/ping-pong-python.git
+git clone https://github.com/francop-dev/proyectos-py
 ```
 
 ### 2. Ejecutar el juego
