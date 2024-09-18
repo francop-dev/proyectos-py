@@ -1,5 +1,5 @@
 import tkinter as tk
-
+#hola amigos, esta es mi calculadora
 
 #crear la ventana principal
 ventana = tk.Tk()
