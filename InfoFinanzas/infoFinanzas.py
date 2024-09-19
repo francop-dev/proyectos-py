@@ -3,10 +3,17 @@ import tkinter as tk
 from bs4 import BeautifulSoup
 import os
 from tkinter import messagebox
+import tkinter.ttk as ttk
+
 
 
 
 entrada_inicial = 'Simbolo del Stock'
+
+modo_noche = False
+
+colores_modo_dia={'negro':'black','celeste':'#6FFFE9','celesteoscuro':'#5BC0BE'}
+colores_modo_noche = {'blanco':'white','azul':'#1C2541','azul-claro':'#3A506B'}
 
 #funcion para borrar el placeholder del entry
 def on_entry_click(event):
@@ -46,23 +53,25 @@ def obtener_info():
         
         #mostrar encabezado
         encabezado = f'{titulo} - {precio}$'
-        encabezado_etiqueta = tk.Label(frame_interior, text=encabezado, font=('Helvetica', 16, 'bold'))
-        encabezado_etiqueta.grid(row=0, column=0, columnspan=4, pady=5, sticky='n')
-        
+        if modo_noche == False:
+            encabezado_etiqueta = tk.Label(frame_interior,fg=colores_modo_dia['negro'], text=encabezado, font=('Helvetica', 16,'bold' ),bg=colores_modo_dia['celeste'],relief="raised",borderwidth=3)
+            encabezado_etiqueta.grid(row=0, column=0, columnspan=4, pady=5, sticky='n')
+        else:
+            encabezado_etiqueta = tk.Label(frame_interior,fg=colores_modo_noche['blanco'], text=encabezado, font=('Helvetica', 16,'bold' ),bg=colores_modo_noche['azul-claro'],relief="raised",borderwidth=3)
+            encabezado_etiqueta.grid(row=0, column=0, columnspan=4, pady=5, sticky='n')
         #extraer tablas
         filas = sopa.find('div', id='quote-summary').find_all('tr')  # Encuentra todas las filas
         
         for indice_tr,tr in enumerate(filas):
                 titulo = tr.find_all('td')[0].get_text()  # Primer columna
                 precio = tr.find_all('td')[1].get_text()   # Segunda columna
-                fila = (indice_tr // 2) 
-                columna = indice_tr % 2
+                fila = (indice_tr // 2)
+                columna = (indice_tr % 2) 
                 agregar_a_filas(titulo,precio,fila,columna)
 
     except requests.exceptions.RequestException as e:
         messagebox.showerror('Error', f'No se pudo obtener la informacion: {e}')
     
-#funcion para agregar los registros a la tabla
 #funcion para agregar los registros a la tabla
 def agregar_a_filas(titulo, precio, fila, columna):
     # Colocar las primeras 8 filas en la primera tabla y las siguientes 8 en la segunda
@@ -71,12 +80,23 @@ def agregar_a_filas(titulo, precio, fila, columna):
         columna += 2  # Desplazamos a la derecha para la segunda tabla
     
     # Crear la etiqueta con el nombre
-    etiqueta_widget = tk.Label(frame_interior, text=titulo + ':', font=('Helvetica', 10), anchor='w')
-    etiqueta_widget.grid(row=fila, column=columna * 2, sticky='w', padx=10, pady=2)
+    etiqueta_widget = tk.Label(frame_interior, text=titulo + ':', font=('Helvetica', 10,'bold'),fg='black', anchor='w',bg='#6FFFE9',relief="ridge",borderwidth=1)
+    etiqueta_widget.grid(row=fila+1, column=columna * 2, sticky='w', padx=10, pady=1)
     
     # Crear la etiqueta con el valor
-    valor_widget = tk.Label(frame_interior, text=precio, font=('Helvetica', 10), anchor='w')
-    valor_widget.grid(row=fila, column=columna * 2 + 1, padx=10, pady=2)
+    valor_widget = tk.Label(frame_interior, text=precio,fg='black', font=('Helvetica', 10,'bold'), anchor='w',bg='#6FFFE9',relief="ridge",borderwidth=1)
+    valor_widget.grid(row=fila+1, column=columna * 2 + 1,sticky='w', padx=10, pady=1)
+    
+
+    
+def apariencia():
+    global modo_noche
+    if var.get() == 1:
+        modo_noche = True
+    else:
+        modo_noche = False
+    
+  
 #ventana
 ventana = tk.Tk()
 #tamaño ventana
@@ -90,18 +110,37 @@ ventana.title('InfoFinanzas')
 #ruta e icono
 icon_path = os.path.join(current_path,'calculo.png')
 ventana.iconphoto(False, tk.PhotoImage(file=icon_path))
+#color de la ventana
+ventana.configure(bg='#6FFFE9')
+
+#checkbutton cambio de apariencia
+var = tk.IntVar()
+
+casilla = tk.Checkbutton(
+  ventana, 
+  text="Darkmode", 
+  onvalue=1, 
+  offvalue=0,
+  variable=var,
+  command=apariencia,
+  bg='#6FFFE9',
+  font=('Helvetica', 13,'bold')
+)
+
+casilla.pack(anchor='e',pady=2,padx=20)
+
 
 #visor
 visor = tk.Entry(ventana,
                  width = 20,
                  font=('Helvetica', 16,'bold'),
-                 fg='grey',
-                 bg='#eef0f2',
+                 fg='#eef0f2',
+                 bg='#eef0f2',relief="ridge",borderwidth=2
                  )
 
 visor.insert(0, entrada_inicial)
 visor.bind('<FocusIn>',on_entry_click)
-visor.pack(pady=20)
+visor.pack(pady=1)
 
 
 #boton para buscar
@@ -109,14 +148,14 @@ boton_buscar = 'Obtener informacion'
 boton =tk.Button(ventana,
           text=boton_buscar,
           font=('Helvetica',20,'bold'),
-          bg='#0d21a1',
+          bg='#3A506B',
           fg='#eef0f2',
           command=obtener_info
           )
-boton.pack(pady=20)
+boton.pack(pady=8)
 
 #frame (cuadro) para el area de resultados
-frame_interior = tk.Frame(ventana)
+frame_interior = tk.Frame(ventana,bg='#5BC0BE')
 frame_interior.pack(fill='both',padx=10,pady=10,expand=True)
 
 frame_interior.grid_columnconfigure(0,weight=1)
@@ -129,4 +168,3 @@ frame_interior.grid_columnconfigure(3,weight=1)
 
 
 ventana.mainloop()
-
