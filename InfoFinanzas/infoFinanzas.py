@@ -47,7 +47,7 @@ def obtener_info():
         #mostrar encabezado
         encabezado = f'{titulo} - {precio}$'
         encabezado_etiqueta = tk.Label(frame_interior, text=encabezado, font=('Helvetica', 16, 'bold'))
-        encabezado_etiqueta.grid(row=0, column=0, columnspan=4, pady=10, sticky='n')
+        encabezado_etiqueta.grid(row=0, column=0, columnspan=4, pady=5, sticky='n')
         
         #extraer tablas
         filas = sopa.find('div', id='quote-summary').find_all('tr')  # Encuentra todas las filas
@@ -63,15 +63,20 @@ def obtener_info():
         messagebox.showerror('Error', f'No se pudo obtener la informacion: {e}')
     
 #funcion para agregar los registros a la tabla
-def agregar_a_filas(titulo,precio,fila,columna):
-    #etiqueta 
-    etiqueta_widget = tk.Label(frame_interior,text=titulo +':',font=('helvetica',10),anchor='w',name=f'etiqueta_{fila}_{columna}')
+#funcion para agregar los registros a la tabla
+def agregar_a_filas(titulo, precio, fila, columna):
+    # Colocar las primeras 8 filas en la primera tabla y las siguientes 8 en la segunda
+    if fila >= 8:  # Si supera la fila 8, comenzamos la segunda tabla
+        fila -= 8
+        columna += 2  # Desplazamos a la derecha para la segunda tabla
+    
+    # Crear la etiqueta con el nombre
+    etiqueta_widget = tk.Label(frame_interior, text=titulo + ':', font=('Helvetica', 10), anchor='w')
     etiqueta_widget.grid(row=fila, column=columna * 2, sticky='w', padx=10, pady=2)
     
-    #valor
-    valor_widget = tk.Label(frame_interior,text=precio +':' ,font=('helvetica',10),anchor='w',name=f'etiqueta_{fila}_{columna}')
-    valor_widget.grid(row=fila, column=columna *2 + 1, padx=10, pady=2)
-    
+    # Crear la etiqueta con el valor
+    valor_widget = tk.Label(frame_interior, text=precio, font=('Helvetica', 10), anchor='w')
+    valor_widget.grid(row=fila, column=columna * 2 + 1, padx=10, pady=2)
 #ventana
 ventana = tk.Tk()
 #tamaño ventana
