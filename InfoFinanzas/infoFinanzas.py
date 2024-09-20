@@ -48,13 +48,14 @@ def aplicar_paleta(paleta):
 
 #funcion para borrar el placeholder del entry
 def on_entry_click(event):
-    color_incio = colores_modo_dia['boton_fg'] if not modo_noche else colores_modo_noche['boton_fg']
+    color_incio = 'black' if not modo_noche else colores_modo_noche['boton_fg'] 
     if visor.get() == entrada_inicial:
         visor.delete(0,'end')
         visor.config(fg=color_incio)
 
     #funcion para extraer datos
 def obtener_info():
+    
     sigla = visor.get()
     url = 'https://es.finance.yahoo.com/quote/' + sigla
     if sigla == entrada_inicial or not sigla:
@@ -80,8 +81,10 @@ def obtener_info():
             widget.destroy()
         
         #mostrar encabezado
+        color_incio = colores_modo_dia['frame_bg'] if not modo_noche else colores_modo_noche['frame_bg']
+        color_incio_letras = colores_modo_dia['texto_etiquetas_fg'] if not modo_noche else colores_modo_noche['texto_etiquetas_fg']
         encabezado = f'{titulo} - {precio}$'
-        encabezado_etiqueta = tk.Label(frame_interior, text=encabezado, font=('Helvetica', 16,'bold' ),relief="raised",borderwidth=3)
+        encabezado_etiqueta = tk.Label(frame_interior, text=encabezado, font=('Helvetica', 16,'bold' ),relief="raised",borderwidth=3, bg = color_incio,fg=color_incio_letras)
         encabezado_etiqueta.grid(row=0, column=0, columnspan=4, pady=5, sticky='n')
         
         #extraer tablas
@@ -99,28 +102,23 @@ def obtener_info():
     
 #funcion para agregar los registros a la tabla
 def agregar_a_filas(titulo, precio, fila, columna):
-    global etiqueta_widget,valor_widget
+    
     # Colocar las primeras 8 filas en la primera tabla y las siguientes 8 en la segunda
     if fila >= 8:  # Si supera la fila 8, comenzamos la segunda tabla
         fila -= 8
         columna += 2  # Desplazamos a la derecha para la segunda tabla
     
-    
+    color_incio_letras = colores_modo_dia['texto_etiquetas_fg'] if not modo_noche else colores_modo_noche['texto_etiquetas_fg']
     color_incio = colores_modo_dia['frame_bg'] if not modo_noche else colores_modo_noche['frame_bg']
     # Crear la etiqueta con el nombre
-    etiqueta_widget = tk.Label(frame_interior, text=titulo + ':', font=('Helvetica', 10,'bold'), anchor='w',relief="ridge",borderwidth=1, bg=color_incio)
+    etiqueta_widget = tk.Label(frame_interior, text=titulo + ':', font=('Helvetica', 10,'bold'), anchor='w',relief="ridge",borderwidth=1, bg=color_incio, fg=color_incio_letras)
     etiqueta_widget.grid(row=fila+1, column=columna * 2, sticky='w', padx=10, pady=1)
     
     # Crear la etiqueta con el valor
-    valor_widget = tk.Label(frame_interior, text=precio,fg='black', font=('Helvetica', 10,'bold'), anchor='w',relief="ridge",borderwidth=1, bg=color_incio)
+    valor_widget = tk.Label(frame_interior, text=precio, font=('Helvetica', 10,'bold'), anchor='w',relief="ridge",borderwidth=1, bg=color_incio ,fg=color_incio_letras)
     valor_widget.grid(row=fila+1, column=columna * 2 + 1,sticky='w', padx=10, pady=1)
     
 
-
-
-
-
-    
 def apariencia():
     global modo_noche
     if var.get() == 1:
